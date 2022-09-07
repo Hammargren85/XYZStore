@@ -8,11 +8,11 @@ using XYZStore.Models;
 
 namespace XYZStore.DataAccess.Repository
 {
-	public class UnitOfWork : IUnitOfWork
+	public class unitOfWork : IUnitOfWork
 	{
 		private ApplicationDbContext _db;
 
-		public UnitOfWork(ApplicationDbContext db)
+		public unitOfWork(ApplicationDbContext db)
 		{ 
 			_db = db;
 			Category = new CategoryRepository(_db);
