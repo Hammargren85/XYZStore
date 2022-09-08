@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using XYZStore.DataAccess;
 using XYZStore.Models;
 using XYZStore.Models.Models;
 
 namespace XYZStore.DataAccess;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext
 {
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext>options) : base(options)
 	{
@@ -14,4 +15,5 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Category>Categories { get; set; }
 	public DbSet<CoverType>CoverType { get; set; }
 	public DbSet<Product>Products { get; set; }
+	public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 }

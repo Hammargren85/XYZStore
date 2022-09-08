@@ -3,7 +3,6 @@ using System.Diagnostics;
 using XYZStore.DataAccess.Repository.IRepository;
 using XYZStore.Models;
 using XYZStore.Models.Models;
-using XYZStore.Models.ViewModels;
 
 
 namespace XYZStore.Areas.Customer.Controllers;
@@ -25,6 +24,16 @@ public class HomeController : Controller
             return View(productList);
         }
 
+        public IActionResult Details(int id)
+        {
+        ShoppingCart cartObj = new()
+        {
+            Count = 1,
+            Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id, includeProperties: "Category,CoverType")
+        };
+            return View(cartObj);
+        }
+        
         public IActionResult Privacy()
         {
             return View();
