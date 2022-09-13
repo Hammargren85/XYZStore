@@ -3,6 +3,9 @@ using XYZStore.DataAccess;
 using XYZStore.DataAccess.Repository;
 using XYZStore.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using XYZStore.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 	builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(/*options => options.SignIn.RequireConfirmedAccount = true*/)
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
 .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddScoped<IUnitOfWork, unitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 var app = builder.Build();
 
