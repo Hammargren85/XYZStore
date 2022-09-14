@@ -27,10 +27,14 @@ namespace XYZStore.DataAccess.Repository
 			dbSet.Add(entity);
 		}
 		//IncludeProperties "Category,CoverType"
-		public IEnumerable<T> GetAll(string? includeProperties = null)
+		public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter=null, string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
-			if(includeProperties != null)
+			if(filter != null)
+			{
+				query = query.Where(filter);
+			}
+			if (includeProperties != null)
 			{
 				foreach(var includeProp in includeProperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
 				{
@@ -52,12 +56,10 @@ namespace XYZStore.DataAccess.Repository
 			}
 			return query.FirstOrDefault();
 		}
-
 		public void Remove(T entity)
 		{
 			dbSet.Remove(entity);
 		}
-
 		public void RemoveRange(IEnumerable<T> entity)
 		{
 			dbSet.RemoveRange(entity);

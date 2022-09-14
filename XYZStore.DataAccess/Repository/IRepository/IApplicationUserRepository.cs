@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XYZStore.Models;
+using XYZStore.Models.Models;
 
 namespace XYZStore.DataAccess.Repository.IRepository
 {
-	public interface ICategoryRepository : IRepository<Category>
+	public interface IApplicationUserRepository : IRepository<ApplicationUser>
 	{
-	 void Update(Category obj);
-		
-	}
 
+	}
 }
