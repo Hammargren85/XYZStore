@@ -18,10 +18,11 @@
                     <div class="row">
                         <div class="col-8 col-lg-8">
                             <div class="row pl-2">
-                            <h5 class="text-muted">IMDB : @Model.Product.IMDB</h5>
+                            <h5 class="text-primary">IMDB: @Model.Product.IMDB</h5>
                             </div>
                             <div class="row pl-2">
-                            <h5 class="text-muted pb-2">List Price: <strike>@Model.Product.ListPrice.ToString("c")</strike></h5>
+                            <h5 class="text-muted pb-2">Old Price: <strike>@Model.Product.ListPrice.ToString("c")</strike></h5>
+                            <h5 class="text-primary pb-2">New Price: @Model.Product.Price.ToString("c")</h5>
                         </div>
                             <div class="row text-center pl-2">
                                 <div class="p-1 col-2 bg-secondary border-bottom">
@@ -33,9 +34,9 @@
                                 <div class="p-1 col-2 bg-secondary border-bottom">
                                     <div>6-10</div>
                                 </div>
-                                <div class="p-1 col-2 bg-secondary border-bottom">
+                              @*<div class="p-1 col-2 bg-secondary border-bottom">
                                     <div>100+</div>
-                                </div>
+                                </div>*@
                             </div>
                             <div class="row text-center pl-2 style=color:maroon; font-weight:bold">
                                 <div class="p-1 col-2 bg-secondary">
@@ -47,10 +48,11 @@
                             <div class="p-1 col-2 bg-secondary">
                                 <div>@Model.Product.Price10.ToString("c")</div>
                             </div>
-                            <div class="p-1 col-2 bg-secondary">
+                            @*<div class="p-1 col-2 bg-secondary">
                                 <div>@Model.Product.ListPrice.ToString("c")</div>
-                            </div>
+                            </div>*@                            
                         </div>
+                        <br /><br />
                         <div class="row pl-2">
                             <p class="text-secondary">@Model.Product.Description</p>
                         </div>    
