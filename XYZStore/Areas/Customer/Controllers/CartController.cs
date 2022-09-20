@@ -144,7 +144,7 @@ namespace XYZStore.Areas.Customer.Controllers
 			
 			var service = new SessionService();
 			Session session = service.Create(options);
-			_unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id,session.PaymentIntentId);
+			_unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id,session.Id,session.PaymentIntentId);
 			_unitOfWork.Save();
 			Response.Headers.Add("Location", session.Url);
 			return new StatusCodeResult(303);
@@ -164,9 +164,9 @@ namespace XYZStore.Areas.Customer.Controllers
 				_unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
 				_unitOfWork.Save();
 			}
-			List<ShoppingCart> shoppingCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
+			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
 			orderHeader.ApplicationUserId).ToList();
-			_unitOfWork.ShoppingCart.RemoveRange(ShoppingCartVM.ListCart);
+			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
 			_unitOfWork.Save();
 			return View(id);
 		}
