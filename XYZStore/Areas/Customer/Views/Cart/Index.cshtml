@@ -9,10 +9,10 @@
                       <div class="col-6 pt-2">
                       <i class="fa fa-shopping-cart"></i> &nbsp;
                       Shopping Cart
-                 </div>
-                     <div class="col-6 text-end">
+                    </div>
+                   <div class="col-6 text-end">
                      <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-success">Continue Shopping</a>
-                     </div>
+                 </div>
               </div>
               <div class="card-body">
                   @foreach(var item in Model.ListCart)
@@ -45,7 +45,7 @@
                                      </a>                                          
                                     </div>
                                 </div>
-                                </div>                                                 
+                            </div>                                                 
                          </div>
                         <hr />
                        }
@@ -54,20 +54,18 @@
                                 <ul class="list-group">
                                  <li class="list-group-item d-flex justify-content-between bg-light">
                             <span class="text-info"> Total (SEK)</span>
-                            <strong class="text-info">$$$ <span id="txtOrderTotal">@Model.CartTotal.ToString("c")</span></strong>
+                            <strong class="text-info">$$$ <span id="txtOrderTotal">@Model.OrderHeader.OrderTotal.ToString("c")</span></strong>
                                </li>
                             </ul>
                           </div>
                      </div>
                   </div>
-                 <div class="card-footer">
                  <div class="card-footer row">
                       <div class="col-sm-12 col-lg-4 col-md-6 offset-lg-8 offset-md-6 ">                          
                       <a asp-action="Summary" class="btn btn-success form-control">Summary</a>
                      </div>   
                    </div>
-              </div>
-        </div> 
+              </div> 
         </div>
      </div>
 </form>

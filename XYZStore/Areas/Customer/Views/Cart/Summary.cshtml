@@ -1,18 +1,22 @@
-﻿
+﻿@model XYZStore.Models.ViewModels.ShoppingCartVM
+@using Microsoft.Extensions.Options
+@inject IOptions<XYZStore.Utility.StripeSettings> Stripe
+
 <form method="post">
     <br />
-    <div class="backgroundWhiteBorder">
         <div class="container">
             <div class="card">
-                <div class="card-header bg-dark text-light ml-0 row container">
+                <div class="card-header bg-dark text-light ml-0">
+                    <div class="row container">
                     <div class="col-6">
                         <i class="fa fa-shopping-cart"></i> &nbsp;
                         Order Summary
                     </div>
-                <div class="col-6 text-right">
-                  <a class="btn btn-outline-info btn-sm">Back to Cart</a>
-               </div>
-           </div>
+                <div class="col-6 text-end">
+                   <a asp-action="Index" class="btn btn-outline-info btn-sm">Back to Cart</a>
+                 </div>
+                </div>
+            </div>
            <div class="card-body">
                <div class="container rounded p-2">
                    <div class="row">
@@ -22,12 +26,13 @@
                            <span class="text-info">PickUp Details:</span>
                            </h4>
                         </div>
-                <div class="row my-1">
-                <div class="col-3">
+           <div class="row my-1">
+             <div class="col-3">
                <label>Name</label>
                  </div>
               <div class="col-9">
-             <input type="text" class="form-control" />
+             <input asp-for="OrderHeader.Name" type="text" class="form-control" />
+             <span asp-validation-for="OrderHeader.Name" class="text-danger"></span>
                 </div>
                  </div>
                  <div class="row my-1">
@@ -35,15 +40,17 @@
                    <label>Phone</label>
                   </div>
                  <div class="col-9">
-                     <input type="text" class="form-control" />
+              <input asp-for="OrderHeader.PhoneNumber" type="text" class="form-control" />
+              <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
                  </div>
                </div>
                <div class="row my-1">
-                <div class="col-3">
+                 <div class="col-3">
               <label>Street Address</label>
                </div>
                <div class="col-9">
-               <input type="text" class="form-control" />
+             <input asp-for="OrderHeader.StreetAddress" type="text" class="form-control" />
+             <span asp-validation-for="OrderHeader.StreetAddress" class="text-danger"></span>
                   </div>
                  </div>
                 <div class="row my-1">
@@ -51,7 +58,8 @@
               <label>City</label>
              </div>
             <div class="col-9">
-          <input type="text" class="form-control" />
+             <input asp-for="OrderHeader.City" type="text" class="form-control" />
+             <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
             </div>
           </div>
           <div class="row my-1">
@@ -59,7 +67,8 @@
           <label>State</label>
            </div>
            <div class="col-9">
-            <input type="text" class="form-control" />
+             <input asp-for="OrderHeader.State" type="text" class="form-control" />
+             <span asp-validation-for="OrderHeader.State" class="text-danger"></span>
                </div>
              </div>
            <div class="row my-1">
@@ -67,7 +76,8 @@
              <label>Postal Code</label>
              </div>
            <div class="col-9">
-        <input type="text" class="form-control" />
+             <input asp-for="OrderHeader.PostalCode" type="text" class="form-control" />
+             <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
            </div>
             </div>
          </div>
@@ -76,16 +86,19 @@
                  <span class="text-info">Order Summary:</span>
                  </h4>
                  <ul class="list-group mb-3">
-                 <li class="list-group-item d-flex justify-content-between">
+                     @foreach(var details in Model.ListCart)
+                     {
+                  <li class="list-group-item d-flex justify-content-between">
                   <div>
-                  <h6 class="my-0">--TITLE--</h6>
-                      <small class="text-muted">Quantity: --COUNT--</small>
-                   </div>
-                    <span class="text-muted">$ --PRICE* COUNT--</span>
+                  <h6 class="my-0">@details.Product.Title</h6>
+                  <small class="text-muted">Quantity: @details.Count</small>
+                  </div>
+                  <span class="text-muted">@((details.Price * details.Count).ToString("c"))</span>
                   </li>
+                    }
                   <li class="list-group-item d-flex justify-content-between bg-light">
-                  <small class="text-info">Total (USD)</small>
-                      <strong class="text-info">$--GRAND TOTAL--</strong>
+                  <small class="text-info">Total (SEK)</small>
+                      <strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
                  </li>
                 </ul>
               </div>
@@ -95,14 +108,16 @@
            <div class="card-footer">
              <div class="row">
                <div class="col-12 col-md-8 pt-2">
-                <p style="color:maroon; font-size:14px;">Estimate Arrival Date: @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()</p>
+                <p style="color:maroon; font-size:14px;">Estimate Arrival Date:
+                @DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
+                </p>
                </div>
                <div class="col-12 col-md-4">
-               <button type="submit" value="Place Order" class="btn btn-success form-control">Place Order</button>
+               <button type="submit" value="Place Order" class="btn btn-Primary form-control">Place Order</button>
              </div>
            </div>
         </div>
      </div>
   </div>
-</div>
+
 </form>
