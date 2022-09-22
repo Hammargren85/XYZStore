@@ -6,3 +6,4 @@ select * from dbo.Companies
 select * from dbo.Categories
 select * from dbo.Products
 select * from dbo.CoverType
+select * from dbo.OrderHeaders
