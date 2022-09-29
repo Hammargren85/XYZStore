@@ -3,7 +3,6 @@ using XYZStore.DataAccess;
 using XYZStore.DataAccess.Repository;
 using XYZStore.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using XYZStore.Utility;
 using Stripe;
@@ -43,7 +42,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-	StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+//StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:PublishableKey").Get<string>();
 
 app.UseAuthentication();
 

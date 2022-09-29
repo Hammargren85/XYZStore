@@ -238,7 +238,7 @@
                                 }
                                 if (Model.OrderHeader.OrderStatus == SD.StatusInProcess)
                                 {
-                                    <input type="submit" onclick="return ValidateInput()"
+                                    <input type="submit" onclick="return validateInput()"
                                     asp-action="ShipOrder" class="btn btn-primary form-control my-1" value="Ship Order" />
                                 }
                                 @if (Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment &&
@@ -260,12 +260,10 @@
     </div>
 </form>
 
-
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 <script>
-        function ValidateInput() {
+        function validateInput() {
             if (document.GetElementById("trackingNumber").value == "") {
                 Swal.fire({
                     icon: 'error',
@@ -274,9 +272,8 @@
                 });
                 return false;
             }
-            return true;
         }
-                function ValidateInput() {
+                function validateInput() {
             if (document.GetElementById("Carrier").value == "") {
                 Swal.fire({
                     icon: 'error',

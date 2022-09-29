@@ -6,9 +6,8 @@ using XYZStore.Models.Models;
 using XYZStore.DataAccess.Repository.IRepository;
 using XYZStore.Utility;
 using Stripe.Checkout;
-using Microsoft.Extensions.Options;
-using Stripe;
 using XYZStore.Models;
+using Stripe;
 
 namespace XYZStore.Areas.Customer.Controllers
 {
@@ -17,9 +16,12 @@ namespace XYZStore.Areas.Customer.Controllers
 	public class CartController : Controller
 	{
 		private readonly IUnitOfWork _unitOfWork;
+
 		[BindProperty]
 		public ShoppingCartVM ShoppingCartVM { get; set; }
+
 		public int OrderTotal { get; set; }
+		
 		public CartController(IUnitOfWork unitOfWork)
 		{
 			_unitOfWork = unitOfWork;
@@ -39,7 +41,7 @@ namespace XYZStore.Areas.Customer.Controllers
 			{
 				cart.Price = GetPriceBasedOnQuntity(cart.Count,cart.Product.Price,
 				cart.Product.Price5,cart.Product.Price10);
-				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count); 
+				ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count; 
 			}
 			return View(ShoppingCartVM);
 	    }
@@ -50,8 +52,8 @@ namespace XYZStore.Areas.Customer.Controllers
 
 			ShoppingCartVM = new ShoppingCartVM()
 			{
-				ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
-				includeProperties: "Product"),
+				ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
+				claim.Value, includeProperties: "Product"),
 				OrderHeader = new()
 			};
 			ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(
@@ -68,7 +70,7 @@ namespace XYZStore.Areas.Customer.Controllers
 			{
 				cart.Price = GetPriceBasedOnQuntity(cart.Count, cart.Product.Price,
 				cart.Product.Price5, cart.Product.Price10);
-				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+				ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
 			}
 			return View(ShoppingCartVM);
 		}
@@ -80,22 +82,24 @@ namespace XYZStore.Areas.Customer.Controllers
 			var claimsIdentity = (ClaimsIdentity)User.Identity;
 			var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
-			ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == claim.Value,
-				includeProperties: "Product");
+			ShoppingCartVM.ListCart = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == 
+			claim.Value, includeProperties: "Product");
 
-			ShoppingCartVM.OrderHeader.PaymentStatus= SD.PaymentStatusPending;
-			ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
-			ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
+
+			//ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
+			//ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusPending;
+			ShoppingCartVM.OrderHeader.OrderDate = DateTime.Now;
 			ShoppingCartVM.OrderHeader.ApplicationUserId = claim.Value;
 
 			foreach (var cart in ShoppingCartVM.ListCart)
 			{
 				cart.Price = GetPriceBasedOnQuntity(cart.Count, cart.Product.Price,
-				cart.Product.Price5, cart.Product.Price10);
-				ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+					cart.Product.Price5, cart.Product.Price10);
+				ShoppingCartVM.OrderHeader.OrderTotal += cart.Price * cart.Count;
 			}
 
-			ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+			ApplicationUser applicationUser = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id ==
+			claim.Value);
 
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
@@ -117,27 +121,29 @@ namespace XYZStore.Areas.Customer.Controllers
 					ProductId = cart.ProductId,
 					OrderId = ShoppingCartVM.OrderHeader.Id,
 					Price = cart.Price,
-					Count = cart.Count
+					Count = cart.Count					
 				};	
 				_unitOfWork.OrderDetail.Add(orderDetail);
 				_unitOfWork.Save();
 			}
+		
 			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 			{
 				//Stripe Settings
 				var domain = "https://localhost:44340/";
 				var options = new SessionCreateOptions
-				{
+
+			{
 					PaymentMethodTypes = new List<string>
 				{
 					"card",
 				},
-					LineItems = new List<SessionLineItemOptions>(),
 
+					LineItems = new List<SessionLineItemOptions>(),
 					Mode = "payment",
 					SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
 					CancelUrl = domain + $"customer/cart/index",
-				};
+			};
 				foreach (var item in ShoppingCartVM.ListCart)
 				{
 					var sessionLineItem = new SessionLineItemOptions
@@ -145,8 +151,8 @@ namespace XYZStore.Areas.Customer.Controllers
 						PriceData = new SessionLineItemPriceDataOptions
 						{
 							UnitAmount = (long)(item.Price * 100),
-							Currency = "SEK",
-							ProductData = new SessionLineItemPriceDataProductDataOptions
+							Currency = "sek",
+							ProductData = new SessionLineItemPriceDataProductDataOptions							
 							{
 								Name = item.Product.Title
 							},
@@ -155,34 +161,40 @@ namespace XYZStore.Areas.Customer.Controllers
 					};
 					options.LineItems.Add(sessionLineItem);
 				}
-
+				
 				var service = new SessionService();
 				Session session = service.Create(options);
-				_unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+
+				//ShoppingCartVM.OrderHeader.SessionId = session.Id;
+				//ShoppingCartVM.OrderHeader.PaymentIntentId = session.PaymentIntentId;
+
+				_unitOfWork.OrderHeader.UpdateStripePaymentID(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);				
 				_unitOfWork.Save();
 				Response.Headers.Add("Location", session.Url);
-				return new StatusCodeResult(303);
+				return new StatusCodeResult(303);				
 			}
-			else
-			{
-				return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
-			}
+					else
+					{
+						return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartVM.OrderHeader.Id });
+					}
 
 		}
 		public IActionResult OrderConfirmation(int id)
 		{
 			OrderHeader orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+			
 			if(orderHeader.PaymentStatus != SD.PaymentStatusDelayedPayment)
-			{ 
-			var service = new SessionService();
-			Session session = service.Get(orderHeader.SessionId);
-			//check the stripe status
-			if(session.PaymentStatus.ToLower() == "paid")
+		  { 
+				var service = new SessionService();
+				Session session = service.Get(orderHeader.SessionId);
+
+				//check the stripe status
+				if(session.PaymentStatus.ToLower() == "paid")
 			{
 				_unitOfWork.OrderHeader.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
 				_unitOfWork.Save();
 			}
-		}
+		  }			
 			List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId ==
 			orderHeader.ApplicationUserId).ToList();
 			_unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);

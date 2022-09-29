@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
-using System.Diagnostics;
 using System.Security.Claims;
 using XYZStore.DataAccess.Repository.IRepository;
-using XYZStore.Models;
 using XYZStore.Models.Models;
 using XYZStore.Models.ViewModels;
 using XYZStore.Utility;
@@ -97,8 +95,7 @@ namespace XYZStore.Areas.Admin.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult CancelOrder()
 		{
-			var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);
-			
+			var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id, tracked: false);	
 			if (orderHeader.PaymentStatus == SD.PaymentStatusApproved) 
 			{
 				var options = new RefundCreateOptions
@@ -135,7 +132,8 @@ namespace XYZStore.Areas.Admin.Controllers
 			{
 				var claimsIdentity = (ClaimsIdentity)User.Identity;
 				var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-				orderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId==claim.Value, includeProperties: "ApplicationUser");
+				orderHeaders = _unitOfWork.OrderHeader.GetAll(u => u.ApplicationUserId == 
+				claim.Value, includeProperties: "ApplicationUser");
 			}
 			switch (status)
 			{
