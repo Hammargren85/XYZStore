@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using XYZStore.Utility
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,26 +26,32 @@
                     <ul class="navbar-nav me-auto">                        
                        <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>                        
+                        </li>
+                        @if(User.IsInRole(SD.Role_Admin))
+                        {
                         <li class="nav-item dropdown">
                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">Content Managment</a>  
                          <div class="dropdown-menu">                              
                           <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
                           <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
                           <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
-                         <div class="dropdown-divider"></div>                          
+                         <div class="dropdown-divider"></div>
+                         <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                          <div class="dropdown-divider"></div>
+                         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create User</a>
                         </div>                                         
                         </li>
+                        }
                         <li class="nav-item">
                             <a class=nav-link asp-area="Admin" asp-controller="Order" asp-action="Index">
                                 Manage Order
                             </a>
-                        </li>
-                        <li class="nav-item">
+                        </li>                
+                         <li class="nav-item">
                           <a class=nav-link asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                            <i class="bi bi-cart3"></i>
+                            @await Component.InvokeAsync("ShoppingCart")
                           </a>
-                        </li>
+                        </li>                                
                     </ul>
                     <partial name="_LoginPartial" />
                   @*  <form class="d-flex">
@@ -70,7 +79,6 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script src="//cdn.tiny.cloud/1/j5krc7p36k2kzcwvqsgb9cmwy0eb19s2xljr1ago6zlyg6ey/tinymce/6/plugins.min.js" referrerpolicy="origin"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

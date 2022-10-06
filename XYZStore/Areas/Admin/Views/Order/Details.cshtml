@@ -2,16 +2,18 @@
 @using XYZStore.Utility
 
 <form method="post">
-     <input asp-for="OrderHeader.Id" hidden />      
+    <input asp-for="OrderHeader.Id" hidden />
     <br />
-    <div class="backgroundWhite container">
+    <div class="container">
         <div class="card">
-            <div class="card-header bg-dark text-light ml-0 row container">
+            <div class="card-header bg-dark text-light ml-0">
+                <div class="container row">
                 <div class="col-12 d-none d-md-block col-md-6 pb-1">
                     <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary
                 </div>
                 <div class="col-12 col-md-4 offset-md-2 text-right">
                     <a asp-action="Index" class="btn btn-outline-info form-control btn-sm">Back to Orders</a>
+                </div>
                 </div>
             </div>
             <div class="card-body">
@@ -124,8 +126,8 @@
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
                                     {
-                                        <input asp-for="OrderHeader.Carrier" type="text" class="form-control" />
-                                        <span asp-validation-for="OrderHeader.Carrier" class="text-danger"></span>
+                                        <input asp-for="OrderHeader.Carrier" id="carrier" type="text" class="form-control" />
+                                        <span asp-validation-for="OrderHeader.Carrier"  class="text-danger"></span>
                                     }
                                     else
                                     {
@@ -193,7 +195,7 @@
                                 </div>
                             </div>
                             <input type="submit" asp-action="UpdateOrderDetail" class="btn btn-warning form-control my-1" value="Update Order Details" />
-                        
+
 
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
@@ -229,7 +231,11 @@
                                     </div>
                                 </li>
                             </ul>
-
+                            @if (Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment &&
+                            Model.OrderHeader.OrderStatus == SD.StatusShipped)
+                            {
+                                <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+                            }
                             @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
                             {
                                 if (Model.OrderHeader.OrderStatus == SD.StatusApproved)
@@ -239,15 +245,11 @@
                                 if (Model.OrderHeader.OrderStatus == SD.StatusInProcess)
                                 {
                                     <input type="submit" onclick="return validateInput()"
-                                    asp-action="ShipOrder" class="btn btn-primary form-control my-1" value="Ship Order" />
-                                }
-                                @if (Model.OrderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment &&
-                                    Model.OrderHeader.OrderStatus == SD.StatusShipped)
-                                {
-                                    <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
+                                   asp-action="ShipOrder" class="btn btn-primary form-control my-1" value="Ship Order" />
                                 }
                                 @if (Model.OrderHeader.OrderStatus != SD.StatusRefunded &&
-                                    Model.OrderHeader.OrderStatus != SD.StatusCancelled)
+                                Model.OrderHeader.OrderStatus != SD.StatusCancelled &&
+                                Model.OrderHeader.OrderStatus != SD.StatusShipped)
                                 {
                                     <input type="submit" asp-action="CancelOrder" class="btn btn-danger form-control my-1" value="Cancel Order" />
                                 }
@@ -262,7 +264,7 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-<script>
+    <script>
         function validateInput() {
             if (document.GetElementById("trackingNumber").value == "") {
                 Swal.fire({
@@ -273,8 +275,8 @@
                 return false;
             }
         }
-                function validateInput() {
-            if (document.GetElementById("Carrier").value == "") {
+        function validateInput() {
+            if (document.GetElementById("carrier").value == "") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -284,6 +286,6 @@
             }
             return true;
         }
-</script>
+    </script>
 
 }

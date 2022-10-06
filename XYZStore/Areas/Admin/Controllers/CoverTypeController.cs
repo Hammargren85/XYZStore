@@ -4,10 +4,13 @@ using XYZStore.Models;
 using System.Linq;
 using XYZStore.DataAccess.Repository.IRepository;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using XYZStore.Utility;
 
 namespace XYZStore.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 public class CoverTypeController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

@@ -3,10 +3,13 @@ using XYZStore.DataAccess;
 using XYZStore.Models;
 using System.Linq;
 using XYZStore.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using XYZStore.Utility;
 
 namespace XYZStore.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

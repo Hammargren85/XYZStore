@@ -7,10 +7,13 @@ using System.Collections.Generic;
 using XYZStore.Models.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using XYZStore.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using XYZStore.Utility;
 
 namespace XYZStore.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = SD.Role_Admin)]
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
